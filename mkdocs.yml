@@ -24,14 +24,6 @@ extra:
       link: https://github.com/bot-netizen
     - icon: fontawesome/solid/envelope
       link: mailto:iqbalkhattra85@gmail.com
-
-
-## Page tree
-nav:
-    - Home: index.md
-    - BigData Blog:
-      - Installation: installation.md
-    - Life is a Journey:
-        
+     
 theme:
   name: material
