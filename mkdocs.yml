@@ -1,4 +1,37 @@
-site_name: My Docs
+## Project Information
+site_name: Data Open Source
+site_url: https://bot-netizen.github.io/khattra-ca/
+site_description: Personal Technical Blog
 
+## Repository
+repo_name: khattra-ca 
+repo_url: https://github.com/bot-netizen/khattra-ca
+edit_uri: ''  #disables edit button
+
+# Copyright
+copyright: 2023 Data Open Source
+
+## Social Media
+extra:
+  social:
+    - icon: fontawesome/solid/house
+      link: https://medium.com/@Iqbalkhattra85
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/Iqbalkhattra85
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/iqbalsinghkhattra/
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/bot-netizen
+    - icon: fontawesome/solid/envelope
+      link: mailto:iqbalkhattra85@gmail.com
+
+
+## Page tree
+nav:
+    - Home: index.md
+    - BigData Blog:
+      - Installation: installation.md
+    - Life is a Journey:
+        
 theme:
   name: material
