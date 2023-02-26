@@ -4,9 +4,9 @@ site_url: https://bot-netizen.github.io/khattra-ca/
 site_description: Personal Technical Blog
 
 ## Repository
-repo_name: khattra-ca 
-repo_url: https://github.com/bot-netizen/khattra-ca
-edit_uri: ''  #disables edit button
+#repo_name: khattra-ca 
+#repo_url: https://github.com/bot-netizen/khattra-ca
+#edit_uri: ''  #disables edit button
 
 # Copyright
 copyright: 2023 Data Open Source
@@ -24,6 +24,21 @@ extra:
       link: https://github.com/bot-netizen
     - icon: fontawesome/solid/envelope
       link: mailto:iqbalkhattra85@gmail.com
-     
+  generator: false
+
+
+
 theme:
   name: material
+  palette:
+    primary: blue
+
+  custom_dir: docs/theme_override/
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.indexes
+    - navigation.expand
+  icon:
+    logo: dos-hq-logo
