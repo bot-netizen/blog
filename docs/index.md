@@ -5,7 +5,10 @@ hide:
   - toc
   - footer
 ---
-![Image title](../data_open_source_500x500.png){ align=right }
+
+![New Image](/docs/theme_override/assets/images/data_open_source_500x500.png)
+
+
 # Data Open Source
 
 
