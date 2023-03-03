@@ -31,7 +31,7 @@ extra:
 theme:
   name: material
   palette:
-    primary: blue
+    primary: green
 
   custom_dir: docs/theme_override/
   language: en
@@ -40,5 +40,12 @@ theme:
     - navigation.tabs.sticky
     - navigation.indexes
     - navigation.expand
+    - toc.integrate
   icon:
     logo: dos-hq-logo
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
