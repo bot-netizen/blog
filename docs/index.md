@@ -6,10 +6,7 @@ hide:
   - footer
 ---
 
-![New Image](https://images.unsplash.com/32/C3eOS3DFQgGkcuEXMulZ_IMG_2033.jpg?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=50){ align=right}
-
-
-https://st3.depositphotos.com/1000507/15963/v/450/depositphotos_159636666-stock-illustration-open-source-icon.jpg){ align=right}
+![New Image](https://images.unsplash.com/photo-1587334274328-64186a80aeee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1481&q=80){ align=right}
 
 
 # Data Open Source
