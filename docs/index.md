@@ -14,7 +14,7 @@ hide:
 &nbsp; 
 &nbsp; 
 
-## &nbsp; &nbsp;  _Life Liberty & Pursuit of Data_
+## &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  _"Life, Liberty & Pursuit of Data"_
 
 &nbsp;  
 &nbsp;
@@ -26,7 +26,7 @@ I have worked in data domain for 10+ years, from databases to distibuted  system
 # [:fontawesome-brands-twitter:{ .twitter }](https://twitter.com/Iqbalkhattra85)&nbsp; [:fontawesome-brands-github-alt:](https://github.com/bot-netizen)&nbsp; [:fontawesome-brands-linkedin:](https://www.linkedin.com/in/iqbalsinghkhattra/)&nbsp; [:fontawesome-solid-house:](https://medium.com/@Iqbalkhattra85)
 
 &nbsp;  
-
+&nbsp; 
 
 
 
