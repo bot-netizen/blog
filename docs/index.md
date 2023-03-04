@@ -6,7 +6,7 @@ hide:
   - footer
 ---
 
-![New Image](https://images.unsplash.com/photo-1524055988636-436cfa46e59e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=375&q=30){ align=right}
+![New Image](https://st3.depositphotos.com/1000507/15963/v/450/depositphotos_159636666-stock-illustration-open-source-icon.jpg){ align=right}
 
 # Data Open Source
 
@@ -20,7 +20,7 @@ I have been working on the Data domain from last 12+ years and have been sharing
 # [:fontawesome-brands-twitter:{ .twitter }](https://twitter.com/Iqbalkhattra85)&nbsp; [:fontawesome-brands-github-alt:](https://github.com/bot-netizen)&nbsp; [:fontawesome-brands-linkedin:](https://www.linkedin.com/in/iqbalsinghkhattra/)&nbsp; [:fontawesome-solid-house:](https://medium.com/@Iqbalkhattra85)
 
 &nbsp;  
-
+&nbsp;  
 
 
 
