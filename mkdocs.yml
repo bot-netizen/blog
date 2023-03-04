@@ -1,5 +1,5 @@
 ## Project Information
-site_name: Iqbal Singh Khattra
+site_name: Data Open Source
 site_url: https://bot-netizen.github.io/khattra-ca/
 site_description: Personal Technical Blog
 
@@ -40,7 +40,8 @@ theme:
     - navigation.indexes
     - navigation.expand
     - toc.integrate
-
+  icon:
+    logo: dos-hq-logo
 
 markdown_extensions:
   - attr_list
