@@ -6,7 +6,7 @@ hide:
   - footer
 ---
 
-![New Image](/docs/theme_override/assets/images/data_open_source_500x500.png)
+![New Image](https://github.com/bot-netizen/khattra-ca/blob/main/docs/theme_override/assets/images/data_open_source_500x500.png)
 
 
 # Data Open Source
