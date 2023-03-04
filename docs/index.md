@@ -12,7 +12,9 @@ hide:
 
 # Data Open Source 
 
-## _Life Liberty & Pursuit of Data_
+&nbsp; 
+
+## &nbsp; &nbsp;  _Life Liberty & Pursuit of Data_
 
 &nbsp;  
 &nbsp;
