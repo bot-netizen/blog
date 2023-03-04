@@ -6,12 +6,14 @@ hide:
   - footer
 ---
 
+![New Image](https://images.unsplash.com/photo-1524055988636-436cfa46e59e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=375&q=30){ align=right}
+
 # Data Open Source
 
 
 I have been working on the Data domain from last 12+ years and have been sharing my experience, challenegs and learning with the community on different platforms. Before joining the development world I was teaching in a collge to uni students. I started investing in sharing and writing last year from Medium and i feel this year it is high time to start sharing  on a dedicated platform that I own. 
 
-![New Image](https://images.unsplash.com/photo-1524055988636-436cfa46e59e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=40){ align=right}
+
 
 &nbsp;  
 &nbsp;  
