@@ -12,8 +12,10 @@ hide:
 ## &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; **_Life,  Liberty & The Pursuit of Data_**
 
 &nbsp;  
+&nbsp;
+&nbsp; 
 
-Core Challenge of the data domain is to effectively manage, store, process, analyze, and interpret the vast amounts of data that are being generated every day. The challenge is not just about handling large volumes of data, but also about making sense of the data and turning it into actionable insights.
+Core Challenge of the data platforms in today's world is to effectively manage, store, process, analyze, and interpret the vast amounts of data that we generate every day. The challenge is not just about handling large volumes of data, but also about making sense of the data and turning it into actionable insights.
 
 Open source data projects have become increasingly popular in recent years due to their flexibility, scalability, and cost-effectiveness. These projects are developed and maintained by a community of developers who work collaboratively to build and improve the software. Apache Hadoop, Apache Spark, Apache Kafka, Tenserflow, Scikit Learn are some of the common open source projects used in the data world. 
 

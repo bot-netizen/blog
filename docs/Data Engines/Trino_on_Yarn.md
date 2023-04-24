@@ -38,20 +38,20 @@ The YARN Service API provides a way to manage and deploy long-running services o
 
 ## **[Trino](https://trino.io/docs/current/overview.html)** 
 
-Trino is a distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources. It is based on the JVM model and can run bare metal or using any common resource manager as K8S or YARN. Trino Does not have native support for Yarn Resource Manager and also YARN service API is still in GA mode as of Hadoop3.3, This article is for the knowledge porpose only please take due diligence before implementing this solution in production. 
+Trino is a distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources. It is based on the JVM model and can run bare metal or use any common resource manager such as K8S or YARN. Trino Does not have native support for Yarn Resource Manager and also, YARN service API is still in GA mode as of Hadoop3.3; This article is for knowledge purposes only. Please take due diligence before implementing this solution in production. 
 
 ![Trino](https://github.com/bot-netizen/khattra-ca/blob/main/docs/theme_override/assets/images/Trino_image.png?raw=true)
 
 Trino is a very lightweight java SQL engine based on the Controller & Worker architecture same as Presto. 
 
 #### Coordinator 
-Coordinatos server works as the controller for the whole Trino cluster it  accepts a user query parse and analyze, Create an execution plan and schedule it on the workers for the execution. Coordinator in itself is a very light process and in production systems it is not recomended for any heavy lifting of data processing. All end users connects to the coordinator for the query execution. 
+The Coordinators server works as the controller for the whole Trino cluster it accepts a user query, parse and analyzes the sql syntax, Create an execution plan and schedule it on the workers for execution. Coordinator in itself is a very light process, and in production systems, it is not recommended for any heavy lifting of data processing. All end users connect to the coordinator for the query execution. 
 
 #### Discovery URI
-Coordinator process also contains another end point which is used by all the worker nodes to share an heart beat every x secodns acroos the custer. It helps the coordinator process to make intelligent scheduling decisions during execution of a user request. Coordinator will not schedule a query on a node where the  last heart beat is older than a defined threshold. Discovery server also publish the total cluster worker status to all the nodes which helps in fault toleration in case of a worker process dies. 
+The coordinator process also contains another endpoint which is used by all the worker nodes to share a heartbeat every x seconds across the cluster. It helps the coordinator process to make intelligent scheduling decisions during the execution of a user request. The coordinator will not schedule a query on a node where the last heartbeat is older than a defined threshold. The Discovery server also publishes the total cluster worker status to all the nodes, which help in fault toleration in case of a worker process dies. 
 
 #### Worker
-Worker process performs as dumb query execution job as defined and scheduled by the coordinator on the cluster. Worker picks up a data split and process it based on the pre defined execution plan and report back the results to the coordinator. 
+The worker process performs dumb query execution job as defined and scheduled by the coordinator on the cluster. The worker picks up a data split and processes it based on the pre-defined execution plan, and reports back the results to the coordinator. 
 
 
 
@@ -211,7 +211,7 @@ $PWD/lib/trino-server-415/bin/launcher run
 
 ----
 
-YARN Service API is still in GA mode and it is getting better with the new versions, Running Trino on K8s is another good idea how ever with Hadoop we will be sending the user queries to the data and it is very useful when you are scanning peta bytes of data every day as Data localcity help to minimize the data shuffling across the network. 
+YARN Service API is still in GA mode and it is getting better with the new releases, Running Trino on K8s is another good idea how ever with Hadoop we will be sending the user queries to the data and it is very useful when you are scanning peta bytes of data every day as Data localcity help to minimize the data shuffling across the network. 
 
 Please feel free to try it out and let me know if any questions. Thanks for reading. 
 

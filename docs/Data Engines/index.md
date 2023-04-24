@@ -6,10 +6,5 @@ hide:
 ---
 
 
-## Data Articles.
-
-* Data Quality
-* Data Governance 
-* Data Processing 
-* Data Analytics. 
-* Data OPS
+## Trino - SQL Engine
+### _Trino On Yarn: Maximizing Resource Utilization_
