@@ -1,5 +1,5 @@
 ---
-title: DOS
+title: Home
 hide:
   - navigation
   - toc
