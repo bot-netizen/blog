@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - stg
 permissions:
   contents: write
 jobs:
@@ -21,4 +22,3 @@ jobs:
             mkdocs-material-
       - run: pip install mkdocs-material pillow cairosvg
       - run: mkdocs gh-deploy --force
-      
