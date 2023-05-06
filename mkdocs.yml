@@ -43,6 +43,12 @@ theme:
     - content.code.copy
   icon:
     logo: dos-hq-logo
+  plugins:
+    - social:
+      cards_font: Roboto
+      cards_color:
+          fill: "#0FF1CE" 
+          text: "#FFFFFF"
 
 markdown_extensions:
   - pymdownx.highlight:
