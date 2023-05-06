@@ -1,4 +1,6 @@
 ---
+site_url: https://www.dataopensource.com/
+edit_uri: https://example.com/project/repo/blob/main/docs/
 title: "Trino On Yarn: Maximizing Resource Utilization"
 descriptoin: "Optimizing the Trino performance using HDFS Data locality & YARN"
 hide:
