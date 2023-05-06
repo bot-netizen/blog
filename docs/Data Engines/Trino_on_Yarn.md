@@ -1,5 +1,6 @@
 ---
 title: "Trino On Yarn: Maximizing Resource Utilization"
+descriptoin: "Optimizing the Trino performance using HDFS Data locality & YARN"
 hide:
   - toc
   - footer
