@@ -27,8 +27,6 @@ extra:
       link: mailto:iqbalkhattra85@gmail.com
   generator: false
 
-
-
 theme:
   name: material
   palette:
@@ -44,12 +42,13 @@ theme:
     - content.code.copy
   icon:
     logo: dos-hq-logo
-  plugins:
-    - social:
-      cards_font: Roboto
-      cards_color:
-          fill: "#0FF1CE" 
-          text: "#FFFFFF"
+
+plugins:
+  - social:
+    cards_dir: assets/images/social
+    cards_font: Roboto
+    cards_layout: default/variant
+    debug: true
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -63,3 +62,4 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+      
