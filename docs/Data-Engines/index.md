@@ -7,5 +7,5 @@ hide:
 
 
 ## Trino - SQL Engine
-### [_Trino On Yarn: Maximizing Resource Utilization_](https://www.dataopensource.com/Data%20Engines/Trino_on_Yarn/)
+### [_Trino On Yarn: Maximizing Resource Utilization_](https://www.dataopensource.com/Data%20Engines/Trinodb_On_YARN/)
 
