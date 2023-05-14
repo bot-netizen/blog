@@ -45,7 +45,7 @@ theme:
 plugins:
   - social:
       cards_color:
-        fill: "#0FF1CE"
+        fill: "#088E10"
         text: "#FFFFFF"
 
 markdown_extensions:
