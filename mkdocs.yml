@@ -1,7 +1,7 @@
 ## Project Information
 site_name: Data Open Source
 site_url: https://www.dataopensource.com/
-site_description: Personal Technical Blog
+site_description: Technical Data Blog
 site_author: Iqbal Singh Khattra
 
 ## Repository
@@ -27,8 +27,6 @@ extra:
       link: mailto:iqbalkhattra85@gmail.com
   generator: false
 
-
-
 theme:
   name: material
   palette:
@@ -42,14 +40,13 @@ theme:
     - navigation.expand
     - toc.integrate
     - content.code.copy
-  icon:
-    logo: dos-hq-logo
-  plugins:
-    - social:
-      cards_font: Roboto
+
+# Plugins
+plugins:
+  - social:
       cards_color:
-          fill: "#0FF1CE" 
-          text: "#FFFFFF"
+        fill: "#0FF1CE"
+        text: "#FFFFFF"
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -63,3 +60,4 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+      
