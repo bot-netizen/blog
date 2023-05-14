@@ -1,7 +1,7 @@
 ## Project Information
 site_name: Data Open Source
 site_url: https://www.dataopensource.com
-site_description: Technical Data Blog
+site_description: Technical Blog & Challeneges of Data engineering. 
 site_author: Iqbal Singh Khattra
 
 ## Repository
@@ -45,7 +45,7 @@ theme:
 plugins:
   - social:
       cards_color:
-        fill: "#088E10"
+        fill: "#054a18"
         text: "#FFFFFF"
 
 markdown_extensions:

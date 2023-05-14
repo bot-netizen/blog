@@ -1,5 +1,6 @@
 ---
-title: Home
+title: DOS
+description: Journery of a Data Engineer.
 hide:
   - navigation
   - toc
