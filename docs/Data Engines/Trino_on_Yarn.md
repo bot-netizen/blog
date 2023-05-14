@@ -2,7 +2,7 @@
 site_url: https://www.dataopensource.com/
 edit_uri: https://www.dataopensource.com/Data%20Engines/Trino_on_Yarn/
 title: "Trino On Yarn: Maximizing Resource Utilization"
-descriptoin: "Optimizing the Trino performance using HDFS Data locality & YARN"
+description: "Optimizing the Trino performance using HDFS Data locality & YARN"
 author: Iqbal Singh
 hide:
   - toc
