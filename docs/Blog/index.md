@@ -1,10 +1,10 @@
 ---
-title: Data Processing Engines.
+title: Data Engineer's prospective
 hide:
   - toc
   - footer
 ---
 
 
-## Trino - SQL Engine
-### [_Trino On Yarn: Maximizing Resource Utilization_](https://www.dataopensource.com/Data-Engines/Trinodb_On_YARN)
+### DOS  -  [_Decision Making in Teams_](https://www.dataopensource.com/Blog/Decision_Making_In_Teams.md)
+
