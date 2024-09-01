@@ -1,0 +1,907 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Optimizing the Trino performance using HDFS Data locality & YARN">
+      
+      
+        <meta name="author" content="Iqbal Singh">
+      
+      
+        <link rel="canonical" href="https://www.dataopensource.com/Data-Engines/Trinodb_On_YARN/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.34">
+    
+    
+      
+        <title>Trino On Yarn: Maximizing Resource Utilization - Data Open Source</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.35f28582.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+      
+        <meta  property="og:type"  content="website" >
+      
+        <meta  property="og:title"  content="Trino On Yarn: Maximizing Resource Utilization - Data Open Source" >
+      
+        <meta  property="og:description"  content="Optimizing the Trino performance using HDFS Data locality & YARN" >
+      
+        <meta  property="og:image"  content="https://www.dataopensource.com/assets/images/social/Data-Engines/Trinodb_On_YARN.png" >
+      
+        <meta  property="og:image:type"  content="image/png" >
+      
+        <meta  property="og:image:width"  content="1200" >
+      
+        <meta  property="og:image:height"  content="630" >
+      
+        <meta  property="og:url"  content="https://www.dataopensource.com/Data-Engines/Trinodb_On_YARN/" >
+      
+        <meta  name="twitter:card"  content="summary_large_image" >
+      
+        <meta  name="twitter:title"  content="Trino On Yarn: Maximizing Resource Utilization - Data Open Source" >
+      
+        <meta  name="twitter:description"  content="Optimizing the Trino performance using HDFS Data locality & YARN" >
+      
+        <meta  name="twitter:image"  content="https://www.dataopensource.com/assets/images/social/Data-Engines/Trinodb_On_YARN.png" >
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#containerization" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Data Open Source" class="md-header__button md-logo" aria-label="Data Open Source" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Data Open Source
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Trino On Yarn: Maximizing Resource Utilization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  DOS
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../Blog/" class="md-tabs__link">
+          
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  Data Engines
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Data Open Source" class="md-nav__button md-logo" aria-label="Data Open Source" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Data Open Source
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../Blog/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Blog/Decision_Making_In_Teams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Decision Making in Teams
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Data Engines
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Data Engines
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Trino On Yarn: Maximizing Resource Utilization
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Trino On Yarn: Maximizing Resource Utilization
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#containerization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Containerization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yarn-service-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      YARN Service API
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trino" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trino
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Trino">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#coordinator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coordinator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discovery-uri" class="md-nav__link">
+    <span class="md-ellipsis">
+      Discovery URI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yarn-service-demo" class="md-nav__link">
+    <span class="md-ellipsis">
+      YARN Service Demo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="YARN Service Demo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#coordinator-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coordinator Deployment:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-deployment-yarn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Deployment (YARN)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trino-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trino UI
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Trino On Yarn: Maximizing Resource Utilization</h1>
+
+<h2 id="containerization">Containerization</h2>
+<p>Containerization of software applications is a well known concept in the software world, Everyone knows the flexibility and isolation provided by containerizing an application. In Data world, There are many orchestration tools available today Kubernetes, Mesos &amp; YARN are the mostly adopted ones. </p>
+<p>Today, our focus will be on YARN containers. Apache Hadoop YARN was originally developed to execute isolated Hadoop data-intensive Java processes. In version 3.0, Docker support was added. YARN is a centralized resource manager that utilizes a capacity queues model to segregate resources among different tenets. Each tenet or team is assigned a certain percentage quota of the cluster with a predefined priority, ensuring resource availability for everyone. Hadoop is widely used in organizations for on-premises clusters, and there are numerous SQL engines that have native Hadoop support. Compared to Kubernetes, YARN has a simpler architecture with a straightforward learning curve. However, as the storage and processing separation model has made a comeback in the industry, many organizations are migrating from Hadoop to Kubernetes for heavy data processing due to its flexibility and native cloud support. </p>
+<p>&nbsp;
+&nbsp; </p>
+<h2 id="yarn-service-api"><strong><a href="https://hadoop.apache.org/docs/r3.1.1/hadoop-yarn/hadoop-yarn-site/yarn-service/YarnServiceAPI.html">YARN Service API</a></strong></h2>
+<p>The YARN Service API provides a way to manage and deploy long-running services on a Hadoop cluster.It is designed to make it easier to run and manage services that need to be highly available, scalable, and fault-tolerant stateful or stateless services. its design provides a declarative way to define services using a YAML-based specification file that includes information such as the service name, number of instances and the dependencies. it provides a way to manage the lifecycle of the services, including starting, stopping, scaling, automatic failover, rolling upgrades, and integration with Hadoop's security and monitoring systems</p>
+<p><strong><em>Service Definition</em></strong> : A YAML-based specification file that describes the service and its properties, including the service name, the number of instances, the resource requirements, dependencies, and other details.</p>
+<p><strong><em>Service Instance</em></strong> : A running instance of a service, which is created based on the service definition. A service can have multiple instances, which can be scaled up or down based on demand.</p>
+<p><strong><em>Component</em></strong> : A component is a single process or container that runs as part of a service instance. A service can have multiple components, each with its own resource requirements.</p>
+<p><strong><em>Resource Profile</em></strong> : A set of resource requirements for a service instance or component, including CPU, memory, and disk space. Resource profiles are used to allocate resources and ensure that a service instance or component has the necessary resources to run.</p>
+<p><strong><em>Placement Constraints</em></strong> : Rules that define where a service instance or component can be placed within a cluster. Placement constraints can be used to ensure that services are distributed across nodes in a balanced way.</p>
+<p><strong><em>Service Lifecycle</em></strong> : The lifecycle of a service, including starting, stopping, upgrading, and scaling. The Service API provides methods for managing the service lifecycle, including APIs for creating, updating, and deleting services, and for scaling service instances up or down.</p>
+<p>&nbsp;
+&nbsp; </p>
+<h2 id="trino"><strong><a href="https://trino.io/docs/current/overview.html">Trino</a></strong></h2>
+<p>Trino is a distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources. It is based on the JVM model and can run bare metal or use any common resource manager such as K8S or YARN. Trino Does not have native support for Yarn Resource Manager and also, YARN service API is still in GA mode as of Hadoop3.3; This article is for knowledge purposes only. Please take due diligence before implementing this solution in production. </p>
+<p><img alt="Trino" src="https://github.com/bot-netizen/khattra-ca/blob/main/docs/theme_override/assets/images/Trino_image.png?raw=true" /></p>
+<p>Trino is a very lightweight java SQL engine based on the Controller &amp; Worker architecture same as Presto. </p>
+<h4 id="coordinator">Coordinator</h4>
+<p>The Coordinators server works as the controller for the whole Trino cluster it accepts a user query, parse and analyzes the sql syntax, Create an execution plan and schedule it on the workers for execution. Coordinator in itself is a very light process, and in production systems, it is not recommended for any heavy lifting of data processing. All end users connect to the coordinator for the query execution. </p>
+<h4 id="discovery-uri">Discovery URI</h4>
+<p>The coordinator process also contains another endpoint which is used by all the worker nodes to share a heartbeat every x seconds across the cluster. It helps the coordinator process to make intelligent scheduling decisions during the execution of a user request. The coordinator will not schedule a query on a node where the last heartbeat is older than a defined threshold. The Discovery server also publishes the total cluster worker status to all the nodes, which help in fault toleration in case of a worker process dies. </p>
+<h4 id="worker">Worker</h4>
+<p>The worker process performs dumb query execution job as defined and scheduled by the coordinator on the cluster. The worker picks up a data split and processes it based on the pre-defined execution plan, and reports back the results to the coordinator. </p>
+<h2 id="yarn-service-demo">YARN Service Demo</h2>
+<p>We will be launching  the Trino service on YARN using the json file. the flow will be as below. </p>
+<h4 id="coordinator-deployment">Coordinator Deployment:</h4>
+<ul>
+<li>
+<p>A Coordinator &amp; Discovery server endpoint outside the YARN cluster so we can have a dedicated controller node to avoid any noisy neighbout scenario, we can add the coordinator service on YARN containers as well but it will be impacted by the running YARN services load and also as YARN does not provide and disc or network level seperation, We might end up impacting other running loads on YARN due to heavy Trino User QPS. </p>
+</li>
+<li>
+<p>Download the artifacts for Trino and add the required condiguration files based on the instructions on this session <a href="https://trino.io/docs/current/installation/deployment.html#configuring-trino">here</a> !</p>
+</li>
+<li>
+<p>Assign a dedicated <code>node.id=ffffffff-ffff-ffff-ffff-ffffffffffff</code> as we will not be changing this one in near future, It is better to use meaning ful value as it will show up in our Trino UI. </p>
+</li>
+<li>
+<p>We can assign <code>discovery.uri=localhost:8085</code> as discovery end point will be running on same machine, Please make sure we have not changed the server port else use the new defined port in place of 8085.</p>
+</li>
+<li>
+<p>Launch the Coordinator using the launcher command and you can validate the deployment by going to  <code>&lt;coordinator_hst:8085&gt;</code> url. Trino UI should be up and there should be no worker nodes on the cluster at this point of time. </p>
+</li>
+</ul>
+<h4 id="worker-deployment-yarn">Worker Deployment (YARN)</h4>
+<p>Worker Deployment will be little complex as we need to create and Artifact of the worker node and ship it to the YARN service, We will be using the <code>tarball</code> artifact type for the demo. YARN also support docker type though we need to install docker executables on all the worker nodes. </p>
+<ul>
+<li>
+<p>Download the Trino Base Artifacts and set up the <code>etc</code> configuration directory by following the instructiions given on the Trino deployment page. </p>
+</li>
+<li>
+<p>Create require <code>node.data.dir=/var/trino/data</code> on all the worker/data nodes on the cluster that have active node managers and where we are expecting to run our Trino workers. You can choose to create only on a specific set of nodes as well if you are planning to use <a href="https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/NodeLabel.html">YARN node Labels</a> for Trino deployment. </p>
+</li>
+<li>
+<p>Once all files are created, generate a new tar file using <code>tar -cvzf trino-server-&lt;version&gt;.tar.gz &lt;Trino Directory&gt;</code> , we will use this trino artifact to launch the Trino on YARN. </p>
+</li>
+<li>
+<p>Create a YARN App launcher file as below. </p>
+</li>
+</ul>
+<div class="language-yaml highlight"><span class="filename">sen</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p p-Indicator">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="s">&quot;name&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;trino-yarn-demo&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="s">&quot;version&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1.0.0&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="s">&quot;artifact&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="s">&quot;id&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;&lt;hdfs_path_Artifact&gt;/trino-server-412.tar.gz&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="s">&quot;type&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TARBALL&quot;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="p p-Indicator">},</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="s">&quot;resource&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="s">&quot;cpus&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="s">&quot;memory&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;12288&quot;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="p p-Indicator">},</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="s">&quot;configuration&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="s">&quot;properties&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">      </span><span class="s">&quot;yarn.service.container-failure-per-component.threshold&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">1000</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">      </span><span class="s">&quot;yarn.service.am-resource.memory&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">3072</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="p p-Indicator">},</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">  </span><span class="s">&quot;lifetime&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="nv">-1</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">  </span><span class="s">&quot;components&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="s">&quot;name&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;worker&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="s">&quot;dependencies&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">],</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">    </span><span class="s">&quot;readiness_check&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">      </span><span class="s">&quot;type&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;HTTP&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">      </span><span class="s">&quot;properties&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">        </span><span class="s">&quot;url&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://localhost:8085/v1/info&quot;</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">      </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">    </span><span class="p p-Indicator">},</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">    </span><span class="s">&quot;launch_command&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;./conf/entrypoint.sh&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">    </span><span class="s">&quot;resource&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">      </span><span class="s">&quot;cpus&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">      </span><span class="s">&quot;memory&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;12288&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w">      </span><span class="s">&quot;additional&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">    </span><span class="p p-Indicator">},</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">    </span><span class="s">&quot;placement_policy&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w">      </span><span class="s">&quot;constraints&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">        </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w">          </span><span class="s">&quot;type&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;ANTI_AFFINITY&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w">          </span><span class="s">&quot;scope&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;NODE&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">          </span><span class="s">&quot;target_tags&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">            </span><span class="s">&quot;worker&quot;</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">          </span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w">        </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="w">      </span><span class="p p-Indicator">]</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="w">    </span><span class="p p-Indicator">},</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w">    </span><span class="s">&quot;number_of_containers&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w">    </span><span class="s">&quot;run_privileged_container&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="nv">false</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w">    </span><span class="s">&quot;configuration&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="w">      </span><span class="s">&quot;env&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w">        </span><span class="s">&quot;JAVA_HOME&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/opt/java17/jdk-17.0.4.1&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w">        </span><span class="s">&quot;POTENTIAL_PATH&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$JAVA_HOME/bin:$PATH&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w">        </span><span class="s">&quot;HADOOP_HOME&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$PWD/lib/hadoop&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="w">        </span><span class="s">&quot;HADOOP_YARN_HOME&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$PWD/lib/hadoop&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="w">        </span><span class="s">&quot;CONTAINER_CONFS&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$PWD/conf&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="w">        </span><span class="s">&quot;TRINO_ETC&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$TRINO_HOME/etc&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="w">        </span><span class="s">&quot;TRINO_ETC_CATALOG&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;$TRINO_ETC/catalog&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="w">        </span><span class="s">&quot;TRINO_CONFIG_PROP_NAME_BEFORE&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;trino-config.properties&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="w">        </span><span class="s">&quot;TRINO_CONFIG_PROP_NAME&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;config.properties&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="w">        </span><span class="s">&quot;PORT&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;8085&quot;</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="w">      </span><span class="p p-Indicator">},</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w">    </span><span class="s">&quot;files&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="w">        </span><span class="s">&quot;type&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;PROPERTIES&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="w">        </span><span class="s">&quot;dest_file&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;trino-node.properties&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="w">        </span><span class="s">&quot;properties&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="w">          </span><span class="s">&quot;node.environment&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;poc&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a><span class="w">          </span><span class="s">&quot;node.id&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;${CONTAINER_ID}&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a><span class="w">          </span><span class="s">&quot;node.data-dir&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&quot;/data/trino-yarn/data&quot;</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a><span class="w">        </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a><span class="w">      </span><span class="p p-Indicator">},{</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="w">        </span><span class="s">&quot;type&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;TEMPLATE&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="w">        </span><span class="s">&quot;dest_file&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;entrypoint.sh&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="w">        </span><span class="s">&quot;src_file&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/user/hubble-poc/trino-confs-single-worker/entrypoint.sh&quot;</span><span class="p p-Indicator">,</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="w">        </span><span class="s">&quot;properties&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="w">      </span><span class="p p-Indicator">}]</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="w">    </span><span class="p p-Indicator">},</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="w">    </span><span class="s">&quot;restart_policy&quot;</span><span class="nt"> </span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ALWAYS&quot;</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="w">  </span><span class="p p-Indicator">}]</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="w">  </span><span class="p p-Indicator">}</span><span class="err">,</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="w">  </span><span class="s">&quot;queue&quot;</span><span class="w"> </span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;yarn-queue&gt;,</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="w">  </span><span class="s">&quot;kerberos_principal&quot;</span><span class="w"> </span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="w"> </span><span class="p p-Indicator">}</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a><span class="err">}</span>
+</span></code></pre></div>
+<ul>
+<li>We also need an <code>entrypoint.sh</code> file in the directory where we are launching the yarn app in local. </li>
+</ul>
+<div class="language-sh highlight"><span class="filename">entrypoint.json</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="ch">#!/bin/bash</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1">#Add variables for trino.</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="nv">$TRINO_ETC_CATALOG</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>cp<span class="w"> </span><span class="nv">$CONTAINER_CONFS</span>/trino-catalog-hive.properties<span class="w"> </span><span class="nv">$TRINO_ETC_CATALOG</span>/hive.properties
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>cp<span class="w"> </span><span class="nv">$CONTAINER_CONFS</span>/trino-catalog-iceberg.properties<span class="w"> </span><span class="nv">$TRINO_ETC_CATALOG</span>/iceberg.properties
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>cp<span class="w"> </span><span class="nv">$CONTAINER_CONFS</span>/trino-catalog-mysql.properties<span class="w"> </span><span class="nv">$TRINO_ETC_CATALOG</span>/mysql.properties
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>cp<span class="w"> </span><span class="nv">$CONTAINER_CONFS</span>/trino-jvm.config<span class="w"> </span><span class="nv">$TRINO_ETC</span>/jvm.config
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>cp<span class="w"> </span><span class="nv">$CONTAINER_CONFS</span>/trino-node.properties<span class="w"> </span><span class="nv">$TRINO_ETC</span>/node.properties
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>cp<span class="w"> </span><span class="nv">$CONTAINER_CONFS</span>/trino-config.properties<span class="w"> </span><span class="nv">$TRINO_ETC</span>/config.properties
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>cp<span class="w"> </span><span class="nv">$CONTAINER_CONFS</span>/resource-groups.properties<span class="w"> </span><span class="nv">$TRINO_ETC</span>/resource-groups.properties
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">#Set path to Java17+ manually as Trino need Java 17+ and hadoop runs on Java 8, </span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1">#we need to manually push the java17 to all worker nodes to a specific directory </span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1">#and set path at the time of launching trino. </span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$JAVA_HOME</span>/bin:<span class="nv">$PATH</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>java<span class="w"> </span>-version
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Check Java Version...&quot;</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="c1">#cat $PWD/conf/trino-node.properties</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1">#cat $PWD/conf/trino-node-test2.properties</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1">## Launch Trino in the YARN Container. </span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="nv">$PWD</span>/lib/trino-server-415/bin/launcher<span class="w"> </span>run
+</span></code></pre></div>
+<ul>
+<li>SSH into your yarn client machine and Once all the files are created launch the yarn app with comand <code>yarn app -launch &lt;app-name&gt; yarn-trino-demo.json</code> , Make sure you have both above files in the same direcotry where you are launching the app. </li>
+</ul>
+<h2 id="trino-ui">Trino UI</h2>
+<ul>
+<li>Open the Coordinator server on port 8085 you will see the UI with active worker count as per out requirement of 10 contaners in the launch file. </li>
+</ul>
+<p><img alt="Trino UI" src="https://github.com/bot-netizen/khattra-ca/blob/184fdd2ed6e0650c27fe75cc6012450d186ac81e/docs/theme_override/assets/images/Trino_ui.png?raw=true" /></p>
+<hr />
+<p>YARN Service API is still in GA mode and it is getting better with the new releases, Running Trino on K8s is another good idea how ever with Hadoop we will be sending the user queries to the data and it is very useful when you are scanning peta bytes of data every day as Data localcity help to minimize the data shuffling across the network. </p>
+<p>Please feel free to try it out and let me know if any questions. Thanks for reading. </p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2023 @DataOpenSource
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://medium.com/@Iqbalkhattra85" target="_blank" rel="noopener" title="medium.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1v16.2c0 22.1-17.9 40-40 40h-16c-1.1 0-2.2 0-3.3-.1-1.4.1-2.8.1-4.2.1L416 512h-24c-22.1 0-40-17.9-40-40v-88c0-17.7-14.3-32-32-32h-64c-17.7 0-32 14.3-32 32v88c0 22.1-17.9 40-40 40h-55.9c-1.5 0-3-.1-4.5-.2-1.2.1-2.4.2-3.6.2h-16c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9.1-2.8v-69.7h-32c-18 0-32-14-32-32.1 0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7l255.4 224.5c8 7 12 15 11 24"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/Iqbalkhattra85" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/iqbalsinghkhattra/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/bot-netizen" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:iqbalkhattra85@gmail.com" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4l217.6 163.2c11.4 8.5 27 8.5 38.4 0l217.6-163.2c12.1-9.1 19.2-23.3 19.2-38.4 0-26.5-21.5-48-48-48zM0 176v208c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V176L294.4 339.2a63.9 63.9 0 0 1-76.8 0z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.indexes", "navigation.expand", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56dfad97.min.js"></script>
+      
+    
+  </body>
+</html>
